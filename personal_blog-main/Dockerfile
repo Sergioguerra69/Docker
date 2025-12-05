@@ -1,18 +1,14 @@
-
 FROM python:3.11-slim
 
+WORKDIR /app
 
-ENV PYTHONUNBUFFERED=1
-ENV PIP_DISABLE_PIP_VERSION_CHECK=1
-
+# Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
-    nodejs \
-    npm \
-    build-essential \
+    gcc \
     python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+# Copiar requirements.txt (desarrollo, CON django-browser-reload)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -22,5 +18,5 @@ COPY . .
 # Exponer puerto
 EXPOSE 8000
 
-
-CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+# Comando para desarrollo
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
